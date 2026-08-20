@@ -79,8 +79,14 @@ class FontManager:
             url = font_info["url"]
             logger.info(f"Downloading Unicode font for script '{lang_code}' from {url}...")
             try:
-                urllib.request.urlretrieve(url, font_path)
-                logger.info(f"Successfully downloaded font: {font_path}")
+                import requests
+                resp = requests.get(url, timeout=5)
+                if resp.status_code == 200:
+                    with open(font_path, "wb") as f:
+                        f.write(resp.content)
+                    logger.info(f"Successfully downloaded font: {font_path}")
+                else:
+                    raise Exception(f"HTTP Status {resp.status_code}")
             except Exception as e:
                 logger.error(f"Failed to download font from {url}: {e}")
                 # Fall back to default font if available

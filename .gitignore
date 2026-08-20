@@ -10,6 +10,7 @@ test_*.pdf
 
 # Root test font files
 *.ttf
+!assets/fonts/*.ttf
 
 # Virtual environments
 .venv/
