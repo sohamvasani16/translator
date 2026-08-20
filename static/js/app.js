@@ -149,7 +149,10 @@ document.addEventListener('DOMContentLoaded', () => {
       startPollingProgress();
 
     } catch (err) {
-      showError(err.message);
+      const userMsg = (err.name === 'TypeError' && err.message.includes('fetch'))
+        ? 'Server is finishing initialization or rebooting. Please wait 10 seconds and click Translate again.'
+        : err.message;
+      showError(userMsg);
       setTranslatingState(false);
     }
   });
@@ -165,7 +168,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       try {
         const res = await fetch(`/api/progress/${currentJobId}`);
-        if (!res.ok) throw new Error('Could not fetch translation status.');
+        if (!res.ok) return; // Silent retry on brief network blips
 
         const data = await res.json();
 
@@ -197,9 +200,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
       } catch (err) {
-        console.error('Polling error:', err);
+        console.warn('Temporary network polling glitch, retrying...', err);
       }
-    }, 800);
+    }, 1000);
   }
 
   // Download Trigger
