@@ -1,5 +1,6 @@
 import pymupdf as fitz
 import os
+import gc
 import logging
 from typing import Callable, Optional
 from font_manager import font_manager
@@ -124,18 +125,23 @@ def process_pdf_document(
                 logger.debug(f"Fallback get_text('blocks') exception on page {page_num+1}: {ex}")
 
         if not blocks_to_process:
-            # Fallback 2: Perform RapidOCR for scanned/image PDFs
+            # Fallback 2: Perform zero-copy RapidOCR for scanned/image PDFs
             ocr = get_ocr_engine()
             if ocr:
                 try:
-                    pix_page = page.get_pixmap(dpi=150)
+                    pix_page = page.get_pixmap(dpi=100)
                     scale_x = page.rect.width / pix_page.width
                     scale_y = page.rect.height / pix_page.height
 
-                    img_pil = Image.open(fitz.io.BytesIO(pix_page.tobytes("png")))
-                    img_np = np.array(img_pil)
+                    # Direct zero-copy memory view without PIL PNG buffer overhead
+                    img_np = np.frombuffer(pix_page.samples, dtype=np.uint8).reshape((pix_page.height, pix_page.width, pix_page.n))
+                    if pix_page.n == 4:
+                        img_np = img_np[:, :, :3]
 
                     ocr_res, _ = ocr(img_np)
+                    del pix_page, img_np
+                    gc.collect()
+
                     if ocr_res:
                         for item in ocr_res:
                             box, text, score = item
