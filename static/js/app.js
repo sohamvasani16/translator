@@ -173,13 +173,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const pct = Math.min(100, Math.max(0, data.progress || 0));
         progressBarFill.style.width = `${pct}%`;
         progressPercent.textContent = `${pct}%`;
-        progressStatusText.textContent = data.message || 'Processing pages...';
-
-        if (data.total_pages > 0) {
-          progressPageText.textContent = `Page ${data.current_page} of ${data.total_pages}`;
-        } else {
-          progressPageText.textContent = 'Analyzing PDF layout...';
-        }
 
         if (data.status === 'completed') {
           clearInterval(pollInterval);
@@ -191,6 +184,16 @@ document.addEventListener('DOMContentLoaded', () => {
           setTranslatingState(false);
           progressSection.classList.add('hidden');
           showError(data.error || data.message || 'Translation failed.');
+        } else if (pct >= 100) {
+          progressStatusText.textContent = data.message || 'Finalizing document & preparing download...';
+          progressPageText.textContent = 'Generating output PDF...';
+        } else {
+          progressStatusText.textContent = data.message || 'Processing document pages...';
+          if (data.total_pages > 0) {
+            progressPageText.textContent = `Page ${data.current_page} of ${data.total_pages}`;
+          } else {
+            progressPageText.textContent = 'Analyzing PDF layout & OCR...';
+          }
         }
 
       } catch (err) {
