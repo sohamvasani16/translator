@@ -5,7 +5,11 @@ __pycache__/
 
 # Temporary test PDF outputs & logs
 scratch_*.pdf
+test_*.pdf
 *.log
+
+# Root test font files
+*.ttf
 
 # Virtual environments
 .venv/
