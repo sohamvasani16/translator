@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DocTranslate AI - PDF Document Layout & Table Preserving Translator</title>
+  <meta name="description" content="Translate PDF documents into Hindi, Gujarati, Spanish, French, German, Japanese and 20+ languages while preserving exact bounding box layouts, fonts, and tables.">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#eef2ff',
+              100: '#e0e7ff',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+              900: '#312e81',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="/static/css/custom.css">
+</head>
+<body class="bg-slate-950 text-slate-100 flex flex-col min-h-screen selection:bg-indigo-500 selection:text-white">
+
+  <!-- Top Announcement Bar / Header -->
+  <header class="border-b border-slate-800/80 bg-slate-900/60 backdrop-blur-md sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <!-- Logo & Branding -->
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 via-cyan-500 to-emerald-400 flex items-center justify-center shadow-lg shadow-indigo-500/20">
+          <i data-lucide="file-text" class="w-6 h-6 text-white"></i>
+        </div>
+        <div>
+          <span class="font-extrabold text-xl tracking-tight bg-gradient-to-r from-white via-slate-200 to-indigo-300 bg-clip-text text-transparent">
+            DocTranslate<span class="text-cyan-400">AI</span>
+          </span>
+          <span class="hidden sm:inline-block ml-2 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-emerald-400 bg-emerald-950/60 border border-emerald-800/60 rounded-full">
+            Layout Engine v2.4
+          </span>
+        </div>
+      </div>
+
+      <!-- Header Status Badge -->
+      <div class="flex items-center space-x-4">
+        <div class="hidden md:flex items-center space-x-2 text-xs text-slate-400 bg-slate-800/60 px-3 py-1.5 rounded-full border border-slate-700/50">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+          <span>PyMuPDF Engine Active</span>
+          <span class="text-slate-600">•</span>
+          <span>Auto-Scaling Fonts</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Top Display Banner Ad Slot (Leaderboard 728x90) -->
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
+    <div class="ad-slot-container rounded-xl p-4 flex items-center justify-between text-slate-400">
+      <div class="flex items-center space-x-3">
+        <span class="ad-badge">ADVERTISEMENT</span>
+        <div class="text-xs sm:text-sm">
+          <span class="font-semibold text-slate-200">High-Speed Document Processing Cloud</span> &mdash; Fast, Secure & Enterprise Ready
+        </div>
+      </div>
+      <button class="hidden sm:block text-xs text-indigo-400 hover:text-indigo-300 underline font-medium">Learn More &rarr;</button>
+    </div>
+  </div>
+
+  <!-- Main Content Body -->
+  <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+    <!-- Hero Title -->
+    <div class="text-center max-w-3xl mx-auto mb-10">
+      <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-white mb-4">
+        Translate PDFs with <span class="bg-gradient-to-r from-cyan-400 via-indigo-400 to-emerald-400 bg-clip-text text-transparent">100% Layout & Table</span> Preservation
+      </h1>
+      <p class="text-base sm:text-lg text-slate-400">
+        Extract bounding box coordinates, redact original text, and cleanly re-insert auto-scaled translations for Hindi, Gujarati, Spanish, French, Japanese, and 20+ regional scripts.
+      </p>
+    </div>
+
+    <!-- App Grid: Left Workstation, Right Sidebar Ads -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      
+      <!-- Main Translator Workstation Card (8 cols) -->
+      <div class="lg:col-span-8 space-y-6">
+        
+        <div class="glass-card rounded-2xl p-6 sm:p-8 space-y-6 relative overflow-hidden">
+          
+          <!-- Decorative Top Glow -->
+          <div class="absolute -top-24 -left-24 w-48 h-48 bg-indigo-600/20 rounded-full blur-3xl pointer-events-none"></div>
+          <div class="absolute -bottom-24 -right-24 w-48 h-48 bg-cyan-600/20 rounded-full blur-3xl pointer-events-none"></div>
+
+          <!-- Section Header -->
+          <div class="flex items-center justify-between border-b border-slate-800/80 pb-4">
+            <h2 class="text-lg font-bold text-white flex items-center gap-2">
+              <i data-lucide="upload-cloud" class="w-5 h-5 text-indigo-400"></i>
+              Document Upload & Translation Configuration
+            </h2>
+            <span class="text-xs text-slate-400">Max File Size: 25 MB</span>
+          </div>
+
+          <!-- Drag and Drop Upload Area -->
+          <div id="dropzone" class="dropzone rounded-xl p-8 sm:p-12 text-center cursor-pointer relative group">
+            <input type="file" id="fileInput" accept=".pdf" class="hidden">
+            
+            <div id="uploadPrompt" class="flex flex-col items-center justify-center space-y-4">
+              <div class="w-16 h-16 rounded-2xl bg-indigo-950/60 border border-indigo-800/50 flex items-center justify-center text-indigo-400 group-hover:scale-110 transition-transform duration-300">
+                <i data-lucide="file-up" class="w-8 h-8"></i>
+              </div>
+              <div>
+                <p class="text-base font-semibold text-slate-200">
+                  <span class="text-indigo-400 underline decoration-indigo-400/50">Click to upload</span> or drag & drop your PDF file here
+                </p>
+                <p class="text-xs text-slate-400 mt-1">Supports multi-page documents, tables, charts & scanned vector layouts</p>
+              </div>
+            </div>
+
+            <!-- Selected File Info Banner (Hidden initially) -->
+            <div id="fileInfo" class="hidden bg-slate-900/90 border border-indigo-500/40 rounded-lg p-4 flex items-center justify-between">
+              <div class="flex items-center space-x-3">
+                <div class="p-2 bg-indigo-500/10 rounded-lg text-indigo-400">
+                  <i data-lucide="file-check" class="w-6 h-6"></i>
+                </div>
+                <div class="text-left">
+                  <p id="fileName" class="text-sm font-semibold text-white truncate max-w-xs sm:max-w-md">sample_file.pdf</p>
+                  <p id="fileSize" class="text-xs text-slate-400">1.2 MB</p>
+                </div>
+              </div>
+              <button id="removeFileBtn" class="p-1.5 text-slate-400 hover:text-red-400 hover:bg-slate-800 rounded-lg transition-colors" title="Remove file">
+                <i data-lucide="x" class="w-5 h-5"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Target Language Selection -->
+          <div class="space-y-2">
+            <label for="targetLang" class="block text-sm font-semibold text-slate-300 flex items-center gap-2">
+              <i data-lucide="globe" class="w-4 h-4 text-cyan-400"></i>
+              Select Target Language:
+            </label>
+            <select id="targetLang" class="w-full bg-slate-900/90 border border-slate-700/80 text-slate-100 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all">
+              <option value="hi">🇮🇳 Hindi (हिन्दी)</option>
+              <option value="gu">🇮🇳 Gujarati (ગુજરાતી)</option>
+              <option value="es">🇪🇸 Spanish (Español)</option>
+              <option value="fr">🇫🇷 French (Français)</option>
+              <option value="de">🇩🇪 German (Deutsch)</option>
+              <option value="ja">🇯🇵 Japanese (日本語)</option>
+              <option value="zh-CN">🇨🇳 Chinese Simplified (中文)</option>
+              <option value="ar">🇸🇦 Arabic (العربية)</option>
+              <option value="ru">🇷🇺 Russian (Русский)</option>
+              <option value="pt">🇵🇹 Portuguese (Português)</option>
+              <option value="it">🇮🇹 Italian (Italiano)</option>
+              <option value="bn">🇮🇳 Bengali (বাংলা)</option>
+              <option value="ta">🇮🇳 Tamil (தமிழ்)</option>
+              <option value="te">🇮🇳 Telugu (తెలుగు)</option>
+              <option value="mr">🇮🇳 Marathi (मराठी)</option>
+              <option value="ko">🇰🇷 Korean (한국어)</option>
+              <option value="nl">🇳🇱 Dutch (Nederlands)</option>
+            </select>
+          </div>
+
+          <!-- Error Alert Banner -->
+          <div id="errorAlert" class="hidden bg-red-950/60 border border-red-800/80 rounded-xl p-4 flex items-start space-x-3 text-red-200 text-sm">
+            <i data-lucide="alert-triangle" class="w-5 h-5 text-red-400 shrink-0 mt-0.5"></i>
+            <span id="errorMessage">An unexpected error occurred.</span>
+          </div>
+
+          <!-- Translate Button -->
+          <button id="translateBtn" disabled class="w-full bg-gradient-to-r from-indigo-600 via-indigo-500 to-cyan-500 hover:from-indigo-500 hover:to-cyan-400 text-white font-bold py-4 px-6 rounded-xl shadow-lg shadow-indigo-600/30 flex items-center justify-center space-x-2 transition-all duration-200 opacity-50 cursor-not-allowed transform active:scale-[0.99]">
+            <span id="translateBtnText">Translate Document</span>
+            <i id="translateSpinner" data-lucide="loader-2" class="w-5 h-5 animate-spin hidden"></i>
+            <i data-lucide="sparkles" class="w-5 h-5 text-cyan-200"></i>
+          </button>
+
+          <!-- Real-Time Progress Bar Section -->
+          <div id="progressSection" class="hidden space-y-3 pt-4 border-t border-slate-800">
+            <div class="flex items-center justify-between text-sm">
+              <span id="progressStatusText" class="font-medium text-indigo-300 flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-indigo-400 animate-ping"></span>
+                Processing document...
+              </span>
+              <span id="progressPercent" class="font-mono font-bold text-cyan-400">0%</span>
+            </div>
+            
+            <div class="w-full bg-slate-900 rounded-full h-3 overflow-hidden p-0.5 border border-slate-800">
+              <div id="progressBarFill" class="progress-bar-fill h-full rounded-full w-0"></div>
+            </div>
+            
+            <div class="flex items-center justify-between text-xs text-slate-400">
+              <span id="progressPageText">Analyzing page bboxes...</span>
+              <span>Layout & Font Auto-Scaling Applied</span>
+            </div>
+          </div>
+
+          <!-- Download Section (Hidden until finished) -->
+          <div id="downloadSection" class="hidden space-y-4 pt-4 border-t border-slate-800 text-center animate-fade-in">
+            <div class="p-4 bg-emerald-950/40 border border-emerald-800/60 rounded-xl flex flex-col items-center justify-center space-y-2">
+              <div class="w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center">
+                <i data-lucide="check-circle-2" class="w-7 h-7"></i>
+              </div>
+              <h3 class="text-lg font-bold text-emerald-300">Document Translated Successfully!</h3>
+              <p class="text-xs text-slate-400">Original coordinates, bounding boxes, and table structure preserved.</p>
+            </div>
+
+            <div class="flex flex-col sm:flex-row gap-3">
+              <button id="downloadBtn" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 px-6 rounded-xl shadow-lg shadow-emerald-600/30 flex items-center justify-center space-x-2 transition-all">
+                <i data-lucide="download" class="w-5 h-5"></i>
+                <span>Download Translated PDF</span>
+              </button>
+              <button id="resetBtn" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold py-3.5 px-6 rounded-xl border border-slate-700 transition-colors">
+                Translate Another File
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Sidebar Display Ads Section (4 cols) -->
+      <div class="lg:col-span-4 space-y-6">
+        
+        <!-- Ad Slot 1 (300x250 Medium Rectangle Slot) -->
+        <div class="glass-card rounded-2xl p-6 ad-slot-container flex flex-col justify-between h-[280px]">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <span class="ad-badge">SPONSORED</span>
+              <i data-lucide="info" class="w-3.5 h-3.5 text-slate-500"></i>
+            </div>
+            <div class="w-10 h-10 rounded-xl bg-cyan-950/80 border border-cyan-800/50 flex items-center justify-center text-cyan-400 mb-3">
+              <i data-lucide="cpu" class="w-6 h-6"></i>
+            </div>
+            <h4 class="font-bold text-white text-base">Enterprise PDF API SDK</h4>
+            <p class="text-xs text-slate-400 mt-1">High volume document extraction, OCR, and automated PDF translation for enterprise servers.</p>
+          </div>
+          <button class="w-full py-2 bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-indigo-300 rounded-lg border border-slate-700 transition-colors">
+            View API Docs &rarr;
+          </button>
+        </div>
+
+        <!-- Ad Slot 2 (300x250 Medium Rectangle Slot) -->
+        <div class="glass-card rounded-2xl p-6 ad-slot-container flex flex-col justify-between h-[280px]">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <span class="ad-badge">SPONSORED</span>
+              <i data-lucide="info" class="w-3.5 h-3.5 text-slate-500"></i>
+            </div>
+            <div class="w-10 h-10 rounded-xl bg-purple-950/80 border border-purple-800/50 flex items-center justify-center text-purple-400 mb-3">
+              <i data-lucide="shield-check" class="w-6 h-6"></i>
+            </div>
+            <h4 class="font-bold text-white text-base">Secure Document Storage</h4>
+            <p class="text-xs text-slate-400 mt-1">End-to-end encrypted PDF archiving with instant multi-language search.</p>
+          </div>
+          <button class="w-full py-2 bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-purple-300 rounded-lg border border-slate-700 transition-colors">
+            Start Free Trial &rarr;
+          </button>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- FAQ Accordion Section -->
+    <section class="mt-16 max-w-4xl mx-auto">
+      <div class="text-center mb-8">
+        <h2 class="text-2xl font-bold text-white mb-2">Frequently Asked Questions</h2>
+        <p class="text-sm text-slate-400">Everything you need to know about layout preservation, tables, and regional language support.</p>
+      </div>
+
+      <div class="space-y-4">
+        
+        <!-- FAQ 1 -->
+        <div class="glass-card rounded-xl overflow-hidden border border-slate-800">
+          <button onclick="toggleFaq(1)" class="w-full p-5 text-left font-semibold text-slate-200 flex items-center justify-between hover:text-indigo-400 transition-colors">
+            <span>How does the layout and table preservation work?</span>
+            <i id="faq-icon-1" data-lucide="chevron-down" class="w-5 h-5 text-slate-400 transition-transform duration-200"></i>
+          </button>
+          <div id="faq-content-1" class="hidden px-5 pb-5 text-sm text-slate-400 border-t border-slate-800/60 pt-3">
+            Our backend uses PyMuPDF to extract text blocks along with their precise bounding box coordinates <code class="bg-slate-900 px-1.5 py-0.5 rounded text-xs text-indigo-300">(x0, y0, x1, y1)</code>. The engine redacts the original text while preserving images, table borders, and background vectors, then re-inserts translated text into the exact same coordinates.
+          </div>
+        </div>
+
+        <!-- FAQ 2 -->
+        <div class="glass-card rounded-xl overflow-hidden border border-slate-800">
+          <button onclick="toggleFaq(2)" class="w-full p-5 text-left font-semibold text-slate-200 flex items-center justify-between hover:text-indigo-400 transition-colors">
+            <span>How are non-Latin scripts (Hindi, Gujarati, Japanese) rendered properly?</span>
+            <i id="faq-icon-2" data-lucide="chevron-down" class="w-5 h-5 text-slate-400 transition-transform duration-200"></i>
+          </button>
+          <div id="faq-content-2" class="hidden px-5 pb-5 text-sm text-slate-400 border-t border-slate-800/60 pt-3">
+            The app incorporates an automatic Unicode Font Manager that dynamically fetches Google Noto Sans TTF fonts (e.g. Noto Sans Devanagari, Noto Sans Gujarati, Noto Sans CJK) on-demand. This prevents broken characters or missing glyph boxes.
+          </div>
+        </div>
+
+        <!-- FAQ 3 -->
+        <div class="glass-card rounded-xl overflow-hidden border border-slate-800">
+          <button onclick="toggleFaq(3)" class="w-full p-5 text-left font-semibold text-slate-200 flex items-center justify-between hover:text-indigo-400 transition-colors">
+            <span>What happens if the translated text is longer than the original text block?</span>
+            <i id="faq-icon-3" data-lucide="chevron-down" class="w-5 h-5 text-slate-400 transition-transform duration-200"></i>
+          </button>
+          <div id="faq-content-3" class="hidden px-5 pb-5 text-sm text-slate-400 border-t border-slate-800/60 pt-3">
+            We feature an automatic font-size auto-scaling algorithm. If a translated phrase is longer, the engine incrementally reduces the font size to guarantee the text fits inside the original box without spilling over or overlapping adjacent content.
+          </div>
+        </div>
+
+        <!-- FAQ 4 -->
+        <div class="glass-card rounded-xl overflow-hidden border border-slate-800">
+          <button onclick="toggleFaq(4)" class="w-full p-5 text-left font-semibold text-slate-200 flex items-center justify-between hover:text-indigo-400 transition-colors">
+            <span>What are the document size and privacy limits?</span>
+            <i id="faq-icon-4" data-lucide="chevron-down" class="w-5 h-5 text-slate-400 transition-transform duration-200"></i>
+          </button>
+          <div id="faq-content-4" class="hidden px-5 pb-5 text-sm text-slate-400 border-t border-slate-800/60 pt-3">
+            Documents up to 25MB are supported. Files are processed in memory and never stored permanently on third-party public storage servers.
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-t border-slate-800/80 bg-slate-950 py-8 text-center text-xs text-slate-500">
+    <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <p>&copy; 2026 DocTranslate AI. Powered by FastAPI, PyMuPDF & Google Noto Fonts.</p>
+      <div class="flex items-center space-x-4 text-slate-400">
+        <a href="#faq" class="hover:text-indigo-400 transition-colors">FAQ</a>
+        <span>•</span>
+        <a href="#" class="hover:text-indigo-400 transition-colors">Privacy Policy</a>
+        <span>•</span>
+        <a href="#" class="hover:text-indigo-400 transition-colors">API Docs</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Initialize Lucide Icons -->
+  <script>
+    lucide.createIcons();
+  </script>
+  <!-- App JavaScript -->
+  <script src="/static/js/app.js"></script>
+</body>
+</html>
